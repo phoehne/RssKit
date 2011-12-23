@@ -59,6 +59,7 @@
     xmlChar* headStr;
     xmlChar* bodyStr;
     xmlChar* rssStr;
+    xmlChar* hourStr;
 }
 
 @property (strong) NSString* ticker;
@@ -69,6 +70,7 @@
 -(RssItem*) processItem: (xmlNode*)node;
 -(RssImage*) processImage: (xmlNode*)node;
 -(NSArray*) processSkipDays: (xmlNode*)node;
+-(NSArray*) processSkipHours: (xmlNode*)node;
 -(RssTextInput*) processTextInput: (xmlNode*)node;
 -(RssCloud*) processCloud: (xmlNode*)node;
 -(RssCategory*) processCategory: (xmlNode*)node;

@@ -69,6 +69,7 @@
     headStr = xmlCharStrdup("head");
     bodyStr = xmlCharStrdup("body");
     rssStr = xmlCharStrdup("rss");
+    hourStr = xmlCharStrdup("hour");
     
     return self;
 }
@@ -114,6 +115,8 @@
     free(bodyStr);
     free(rssStr);
     
+    free(hourStr);
+    
 }
 
 -(void) handleChannelAttributes: (xmlNode*)node forChannle: (RssChannel*)rssChannel {
@@ -126,15 +129,13 @@
     else if(xmlStrcmp(descriptionStr, node->name) == 0)    { [rssChannel setDescription: nativeString]; } 
     else if(xmlStrcmp(languageStr, node->name) == 0)       { [rssChannel setLanguage: nativeString]; } 
     else if(xmlStrcmp(lastBuildDateStr, node->name) == 0)  { [rssChannel setLastBuildDate: nativeString]; } 
-    else if(xmlStrcmp(guidStr, node->name) == 0)           { [rssChannel setLastBuildDate: nativeString]; } 
-    else if(xmlStrcmp(pubDateStr, node->name) == 0)        { [rssChannel setLastBuildDate: nativeString]; } 
+    else if(xmlStrcmp(pubDateStr, node->name) == 0)        { [rssChannel setPubDate: nativeString]; } 
     else if(xmlStrcmp(managingEditorStr, node->name) == 0) { [rssChannel setManagingEditor:nativeString]; } 
     else if(xmlStrcmp(webMasterStr, node->name) == 0)      { [rssChannel setWebMaster:nativeString]; }
     else if(xmlStrcmp(generatorStr, node->name) == 0)      { [rssChannel setGenerator:nativeString]; }
     else if(xmlStrcmp(docsStr, node->name) == 0)           { [rssChannel setDocs:nativeString]; }
     else if(xmlStrcmp(ttlStr, node->name) == 0)            { [rssChannel setTtl:nativeString]; }
     else if(xmlStrcmp(ratingStr, node->name) == 0)         { [rssChannel setRating:nativeString]; }
-    else if(xmlStrcmp(skipHoursStr, node->name) == 0)      { [rssChannel setSkipHours: [nativeString intValue]]; }
 }
 
 -(RssRoot*) retrieveFeed {
@@ -200,6 +201,8 @@
                 if(category != nil) { 
                     [categoryArray addObject: category];
                 }
+            } else if(xmlStrcmp(skipHoursStr, node->name) == 0) {
+                [rssChannel setSkipHours: [self processSkipHours:node]];
             } else {
                 [self handleChannelAttributes:node forChannle:rssChannel];
             }
@@ -267,15 +270,33 @@
     return result;
 }
 
+-(NSArray*) processSkipHours:(xmlNode *)node {
+    xmlNode* currentHour;
+    NSMutableArray* skipHours = [[NSMutableArray alloc] init];
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    
+    for(currentHour = node->children; currentHour != NULL; currentHour = currentHour->next) {
+        if(currentHour->type == XML_ELEMENT_NODE) {
+            const char* hourText = (const char*)xmlNodeGetContent(currentHour->children);
+            if(hourStr != NULL) {
+                [skipHours addObject: [formatter numberFromString: [NSString stringWithUTF8String:hourText]]];
+            }
+        }
+    }
+    return skipHours;
+}
+
 -(NSArray*) processSkipDays: (xmlNode*)node {
     xmlNode* currentDay;
     NSMutableArray* skipDays = [[NSMutableArray alloc] init];
     
     for(currentDay = node->children; currentDay != NULL; currentDay = currentDay->next) {
-        if(xmlStrcmp(dayStr, currentDay->name) == 0) {
-            const char* dayName = (const char*)xmlNodeGetContent(node->children);
-            if(dayName != NULL) {
-                [skipDays addObject: [NSString stringWithUTF8String:dayName]];
+        if(currentDay->type == XML_ELEMENT_NODE) {
+            if(xmlStrcmp(dayStr, currentDay->name) == 0) {
+                const char* dayName = (const char*)xmlNodeGetContent(currentDay->children);
+                if(dayName != NULL) {
+                    [skipDays addObject: [NSString stringWithUTF8String:dayName]];
+                }
             }
         }
     }
@@ -288,15 +309,17 @@
     xmlNode* currentNode;
     
     for(currentNode = node->children; currentNode != NULL; currentNode = currentNode->next) {
-        NSString* nativeString = [NSString stringWithUTF8String: (const char*)xmlNodeGetContent(currentNode->children)];
-        if(xmlStrcmp(titleStr, currentNode->name) == 0) {
-            [result setTitle:nativeString];
-        } else if(xmlStrcmp(descriptionStr, currentNode->name) == 0) {
-            [result setDescription:nativeString];
-        } else if(xmlStrcmp(nameStr, currentNode->name) == 0) {
-            [result setName:nativeString];
-        } else if(xmlStrcmp(linkStr, currentNode->name) == 0) {
-            [result setLink:nativeString];
+        if(currentNode->type == XML_ELEMENT_NODE) {
+            NSString* nativeString = [NSString stringWithUTF8String: (const char*)xmlNodeGetContent(currentNode->children)];
+            if(xmlStrcmp(titleStr, currentNode->name) == 0) {
+                [result setTitle:nativeString];
+            } else if(xmlStrcmp(descriptionStr, currentNode->name) == 0) {
+                [result setDescription:nativeString];
+            } else if(xmlStrcmp(nameStr, currentNode->name) == 0) {
+                [result setName:nativeString];
+            } else if(xmlStrcmp(linkStr, currentNode->name) == 0) {
+                [result setLink:nativeString];
+            }
         }
     }
     
