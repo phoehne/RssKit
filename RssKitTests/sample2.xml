@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>Liftoff News</title>
+        <link>http://liftoff.msfc.nasa.gov/</link>
+        <description>Liftoff to Space Exploration.</description>
+        <language>en-us</language>
+        <copyright>Copyright 2011, Major Eastern Syndicate</copyright>
+        <pubDate>Tue, 10 Jun 2003 04:00:00 GMT</pubDate>
+        <lastBuildDate>Tue, 10 Jun 2003 09:41:01 GMT</lastBuildDate>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Weblog Editor 2.0</generator>
+        <managingEditor>editor@example.com</managingEditor>
+        <webMaster>webmaster@example.com</webMaster>
+        <category domain="http://foo.bar.com/domains#somedomain">Science</category>
+        <category>News</category>
+        <docs>http://www.rssboard.org/rss-specification</docs>
+        <cloud domain="foo.bar.com" port="80" path="/apis/news" registerProcedure="register.do" protocol="xml-rpc"/>
+        <ttl>480</ttl>
+        <rating>
+            (PICS-1.1 "http://www.gcf.org/v2.5" labels 
+            on "1994.11.05T08:15-0500" 
+            exp "1995.12.31T23:59-0000" 
+            for "http://www.greatdocs.com/foo.html" 
+            by "George Sanderson, Jr." 
+            ratings (suds 0.5 density 0 color/hue 1)) 
+        </rating>
+        <textInput>
+            <title>Search for news</title>
+            <description>Enter a topic to search of particular stories</description>
+            <name>searchtext</name>
+            <link>http://foo.bar.com/news/search</link>
+        </textInput>
+        <skipHours>
+            <hour>0</hour>
+            <hour>1</hour>
+            <hour>2</hour>
+            <hour>3</hour>
+            <hour>4</hour>
+            <hour>5</hour>
+            <hour>6</hour>
+        </skipHours>
+        <skipDays>
+            <day>Saturday</day>
+            <day>Sunday</day>
+        </skipDays>
+        <image>
+            <url>http://foo.bar.com/images/scienceNews.gif</url>
+            <title>Liftoff News</title>
+            <link>http://liftoff.msfc.nasa.gov/</link>
+            <width>100</width>
+            <height>35</height>
+            <description>Science News Banner Image</description>
+        </image>
+        <item>
+            <title>Star City</title>
+            <link>http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp</link>
+            <description>How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia's &lt;a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm"&gt;Star City&lt;/a&gt;.</description>
+            <pubDate>Tue, 03 Jun 2003 09:39:21 GMT</pubDate>
+            <guid>http://liftoff.msfc.nasa.gov/2003/06/03.html#item573</guid>
+            <author>joe.author@foo.bar.com (Joe Author)</author>
+            <category domain="http://foo.bar.com/domains#somedomain">Science</category>
+            <category domain="http://foo.bar.com/domains#somedomain">Russia</category>
+            <category>ISS</category>
+            <comments>http://foo.bar.com/news/1234/comments</comments>
+            <enclosure url="http://foo.bar.com/media/sound/starcity.mp3" length="12345678" type="audio/mpeg"/>
+            <source url="http://wunderbar.spaceflight.com/newsagg/feed.rss">wunderbar spaceflight</source>
+        </item>
+    </channel>
+</rss>
