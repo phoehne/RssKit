@@ -65,6 +65,11 @@
     registerProcedureStr = xmlCharStrdup("registerProcedure");
     protoclStr = xmlCharStrdup("protocol");
     
+    htmlStr = xmlCharStrdup("html");
+    headStr = xmlCharStrdup("head");
+    bodyStr = xmlCharStrdup("body");
+    rssStr = xmlCharStrdup("rss");
+    
     return self;
 }
 
@@ -104,6 +109,32 @@
     free(registerProcedureStr);
     free(protoclStr);
     
+    free(htmlStr);
+    free(headStr);
+    free(bodyStr);
+    free(rssStr);
+    
+}
+
+-(void) handleChannelAttributes: (xmlNode*)node forChannle: (RssChannel*)rssChannel {
+    const char* contentString = (const char*)xmlNodeGetContent(node->children);
+    NSString* nativeString = [NSString stringWithUTF8String: contentString];
+    
+    if(xmlStrcmp(titleStr, node->name) == 0)               { [rssChannel setTitle: nativeString]; } 
+    else if(xmlStrcmp(copyrightStr, node->name) == 0)      { [rssChannel setCopyright: nativeString]; } 
+    else if(xmlStrcmp(linkStr, node->name) == 0)           { [rssChannel setLink: nativeString]; } 
+    else if(xmlStrcmp(descriptionStr, node->name) == 0)    { [rssChannel setDescription: nativeString]; } 
+    else if(xmlStrcmp(languageStr, node->name) == 0)       { [rssChannel setLanguage: nativeString]; } 
+    else if(xmlStrcmp(lastBuildDateStr, node->name) == 0)  { [rssChannel setLastBuildDate: nativeString]; } 
+    else if(xmlStrcmp(guidStr, node->name) == 0)           { [rssChannel setLastBuildDate: nativeString]; } 
+    else if(xmlStrcmp(pubDateStr, node->name) == 0)        { [rssChannel setLastBuildDate: nativeString]; } 
+    else if(xmlStrcmp(managingEditorStr, node->name) == 0) { [rssChannel setManagingEditor:nativeString]; } 
+    else if(xmlStrcmp(webMasterStr, node->name) == 0)      { [rssChannel setWebMaster:nativeString]; }
+    else if(xmlStrcmp(generatorStr, node->name) == 0)      { [rssChannel setGenerator:nativeString]; }
+    else if(xmlStrcmp(docsStr, node->name) == 0)           { [rssChannel setDocs:nativeString]; }
+    else if(xmlStrcmp(ttlStr, node->name) == 0)            { [rssChannel setTtl:nativeString]; }
+    else if(xmlStrcmp(ratingStr, node->name) == 0)         { [rssChannel setRating:nativeString]; }
+    else if(xmlStrcmp(skipHoursStr, node->name) == 0)      { [rssChannel setSkipHours: [nativeString intValue]]; }
 }
 
 -(RssRoot*) retrieveFeed {
@@ -121,7 +152,9 @@
                                      userInfo:nil];
     }
     
-    doc = xmlReadFile([[self feedUrl] cStringUsingEncoding:NSASCIIStringEncoding], NULL, 0);
+    doc = xmlReadFile([[[self feedUrl] absoluteString] cStringUsingEncoding:NSASCIIStringEncoding], NULL, 
+                      XML_PARSE_RECOVER | XML_PARSE_DTDLOAD | XML_PARSE_PEDANTIC);
+    
     if(doc == NULL) {
         @throw [NSException exceptionWithName:@"NoDocumentReturned" 
                                        reason:[NSString stringWithFormat:@"Unable to retrieve a valid document from %@", [self feedUrl]] 
@@ -129,52 +162,55 @@
     }
     
     root = xmlDocGetRootElement(doc);
+    
+    if(xmlStrcmp(root->name, rssStr)) {
+        @throw [NSException exceptionWithName:@"InvalidDocumentReturned" 
+                                       reason:@"The document does not appear to be an RSS feed" 
+                                     userInfo:nil];
+    }
+    
     channel = root->children;
+    while((channel->type != XML_ELEMENT_NODE) && (channel != NULL)) { 
+        channel = channel->next;
+    }
+    
+    if(channel == NULL) { 
+        @throw [NSException exceptionWithName:@"InvalidDocumentReturned" 
+                                       reason:@"The document does not appear to be an RSS feed" 
+                                     userInfo:nil];
+    }
+    
     for(xmlNode* node = channel->children; node != NULL; node = node->next) {
-        if(xmlStrcmp(itemStr, node->name) == 0) {
-            RssItem* item = [self processItem:node];
-            if(item != nil) { 
-                [itemArray addObject: item]; 
-            };
-        } else if(xmlStrcmp(imageStr, node->name) == 0) {
-            [rssChannel setImage: [self processImage: node]];
-        } else if(xmlStrcmp(skipDaysStr, node->name) == 0) {
-            [rssChannel setSkipDays: [self processSkipDays: node]];
-        } else if(xmlStrcmp(textInputStr, node->name) == 0) {
-            [rssChannel setTextInput: [self processTextInput: node]];
-        } else if(xmlStrcmp(cloudStr, node->name) == 0) {
-            [rssChannel setCloud: [self processCloud: node]];
-        } else if(xmlStrcmp(categoryStr, node->name) == 0) {
-            RssCategory* category = [self processCategory:node];
-            if(category != nil) { 
-                [categoryArray addObject: category];
+        if(node->type == XML_ELEMENT_NODE) {
+            if(xmlStrcmp(itemStr, node->name) == 0) {
+                RssItem* item = [self processItem:node];
+                if(item != nil) { 
+                    [itemArray addObject: item]; 
+                };
+            } else if(xmlStrcmp(imageStr, node->name) == 0) {
+                [rssChannel setImage: [self processImage: node]];
+            } else if(xmlStrcmp(skipDaysStr, node->name) == 0) {
+                [rssChannel setSkipDays: [self processSkipDays: node]];
+            } else if(xmlStrcmp(textInputStr, node->name) == 0) {
+                [rssChannel setTextInput: [self processTextInput: node]];
+            } else if(xmlStrcmp(cloudStr, node->name) == 0) {
+                [rssChannel setCloud: [self processCloud: node]];
+            } else if(xmlStrcmp(categoryStr, node->name) == 0) {
+                RssCategory* category = [self processCategory:node];
+                if(category != nil) { 
+                    [categoryArray addObject: category];
+                }
+            } else {
+                [self handleChannelAttributes:node forChannle:rssChannel];
             }
-        } else {
-            const char* contentString = (const char*)xmlNodeGetContent(node->children);
-            NSString* nativeString = [NSString stringWithUTF8String: contentString];
-            
-            if(xmlStrcmp(titleStr, node->name) == 0)               { [rssChannel setTitle: nativeString]; } 
-            else if(xmlStrcmp(copyrightStr, node->name) == 0)      { [rssChannel setCopyright: nativeString]; } 
-            else if(xmlStrcmp(linkStr, node->name) == 0)           { [rssChannel setLink: nativeString]; } 
-            else if(xmlStrcmp(descriptionStr, node->name) == 0)    { [rssChannel setDescription: nativeString]; } 
-            else if(xmlStrcmp(languageStr, node->name) == 0)       { [rssChannel setLanguage: nativeString]; } 
-            else if(xmlStrcmp(lastBuildDateStr, node->name) == 0)  { [rssChannel setLastBuildDate: nativeString]; } 
-            else if(xmlStrcmp(guidStr, node->name) == 0)           { [rssChannel setLastBuildDate: nativeString]; } 
-            else if(xmlStrcmp(pubDateStr, node->name) == 0)        { [rssChannel setLastBuildDate: nativeString]; } 
-            else if(xmlStrcmp(managingEditorStr, node->name) == 0) { [rssChannel setManagingEditor:nativeString]; } 
-            else if(xmlStrcmp(webMasterStr, node->name) == 0)      { [rssChannel setWebMaster:nativeString]; }
-            else if(xmlStrcmp(generatorStr, node->name) == 0)      { [rssChannel setGenerator:nativeString]; }
-            else if(xmlStrcmp(docsStr, node->name) == 0)           { [rssChannel setDocs:nativeString]; }
-            else if(xmlStrcmp(ttlStr, node->name) == 0)            { [rssChannel setTtl:nativeString]; }
-            else if(xmlStrcmp(ratingStr, node->name) == 0)         { [rssChannel setRating:nativeString]; }
-            else if(xmlStrcmp(skipHoursStr, node->name) == 0)      { [rssChannel setSkipHours: [nativeString intValue]]; }
         }
     }
     
     [rssChannel setItems: itemArray];
     [rssChannel setCategories:categoryArray];
     [rssRoot setChannel: rssChannel];
-        
+    xmlFree(doc);
+    xmlCleanupParser();
     return rssRoot;
 }
 

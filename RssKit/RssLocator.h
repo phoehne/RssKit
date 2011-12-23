@@ -55,10 +55,14 @@
     xmlChar* registerProcedureStr;
     xmlChar* pathStr;
     xmlChar* protoclStr;
+    xmlChar* htmlStr;
+    xmlChar* headStr;
+    xmlChar* bodyStr;
+    xmlChar* rssStr;
 }
 
 @property (strong) NSString* ticker;
-@property (strong) NSString* feedUrl;
+@property (strong) NSURL* feedUrl;
 
 -(RssRoot*) retrieveFeed;
 
