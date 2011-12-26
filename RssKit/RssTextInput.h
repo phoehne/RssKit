@@ -11,7 +11,7 @@
 @interface RssTextInput : NSObject
 
 @property (strong) NSString* title;
-@property (strong) NSString* description;
+@property (strong) NSString* rssDescription;
 @property (strong) NSString* name;
 @property (strong) NSString* link;
 

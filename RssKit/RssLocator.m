@@ -218,28 +218,28 @@
 }
 
 -(RssItem*) processItem:(xmlNode *)node {
-    xmlNode* imageChild;
+    xmlNode* itemChild;
     if(node == NULL) { return nil; }
     RssItem* result = [[RssItem alloc] init];
     
-    for(imageChild = node->children; imageChild != NULL; imageChild = imageChild->next) {
-        const char* contentString = (const char*)xmlNodeGetContent(node->children);
-        if(xmlStrcmp(linkStr, imageChild->name) == 0) {
+    for(itemChild = node->children; itemChild != NULL; itemChild = itemChild->next) {
+        const char* contentString = (const char*)xmlNodeGetContent(itemChild);
+        if(xmlStrcmp(linkStr, itemChild->name) == 0) {
             [result setLink: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(titleStr, imageChild->name) == 0) {
+        } else if(xmlStrcmp(titleStr, itemChild->name) == 0) {
             [result setTitle: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(descriptionStr, imageChild->name) == 0) {
+        } else if(xmlStrcmp(descriptionStr, itemChild->name) == 0) {
             [result setDescription: [NSString stringWithUTF8String: contentString]];
-            xmlChar* prop = xmlGetProp(imageChild, isPermaLinkStr);
+            xmlChar* prop = xmlGetProp(itemChild, isPermaLinkStr);
             if(prop != NULL) {
                 NSString* converted = [NSString stringWithUTF8String: (const char*)prop];
                 if(![converted isEqualToString:@"false"]) {
                     [result setIsPermaLink:YES];
                 }
             }
-        } else if(xmlStrcmp(guidStr, imageChild->name) == 0) {
+        } else if(xmlStrcmp(guidStr, itemChild->name) == 0) {
             [result setGuid: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(pubDateStr, imageChild->name) == 0) {
+        } else if(xmlStrcmp(pubDateStr, itemChild->name) == 0) {
             [result setPubDate: [NSString stringWithUTF8String: contentString]];
         }
     }
@@ -253,20 +253,23 @@
     RssImage* result = [[RssImage alloc] init];
     
     for(imageChild = node->children; imageChild != NULL; imageChild = imageChild->next) {
-        const char* contentString = (const char*)xmlNodeGetContent(node->children);
-        if(xmlStrcmp(urlStr, imageChild->name) == 0) {
-            [result setUrl: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(titleStr, imageChild->name) == 0) {
-            [result setTitle: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(linkStr, imageChild->name) == 0) {
-            [result setLink: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(widthStr, imageChild->name) == 0) {
-            [result setWidth: [[NSString stringWithUTF8String: contentString] intValue]];
-        } else if(xmlStrcmp(heightStr, imageChild->name) == 0) {
-            [result setHeight: [[NSString stringWithUTF8String: contentString] intValue]];
+        if(imageChild->type == XML_ELEMENT_NODE) {
+            const char* contentString = (const char*)xmlNodeGetContent(imageChild);
+            if(xmlStrcmp(urlStr, imageChild->name) == 0) {
+                [result setUrl: [NSString stringWithUTF8String: contentString]];
+            } else if(xmlStrcmp(titleStr, imageChild->name) == 0) {
+                [result setTitle: [NSString stringWithUTF8String: contentString]];
+            } else if(xmlStrcmp(linkStr, imageChild->name) == 0) {
+                [result setLink: [NSString stringWithUTF8String: contentString]];
+            } else if(xmlStrcmp(widthStr, imageChild->name) == 0) {
+                [result setWidth: [[NSString stringWithUTF8String: contentString] intValue]];
+            } else if(xmlStrcmp(descriptionStr, imageChild->name) == 0) {
+                [result setRssDescription: [NSString stringWithUTF8String: contentString]];
+            } else if(xmlStrcmp(heightStr, imageChild->name) == 0) {
+                [result setHeight: [[NSString stringWithUTF8String: contentString] intValue]];
+            }
         }
     }
-    
     return result;
 }
 
@@ -310,11 +313,11 @@
     
     for(currentNode = node->children; currentNode != NULL; currentNode = currentNode->next) {
         if(currentNode->type == XML_ELEMENT_NODE) {
-            NSString* nativeString = [NSString stringWithUTF8String: (const char*)xmlNodeGetContent(currentNode->children)];
+            NSString* nativeString = [NSString stringWithUTF8String: (const char*)xmlNodeGetContent(currentNode)];
             if(xmlStrcmp(titleStr, currentNode->name) == 0) {
                 [result setTitle:nativeString];
             } else if(xmlStrcmp(descriptionStr, currentNode->name) == 0) {
-                [result setDescription:nativeString];
+                [result setRssDescription:nativeString];
             } else if(xmlStrcmp(nameStr, currentNode->name) == 0) {
                 [result setName:nativeString];
             } else if(xmlStrcmp(linkStr, currentNode->name) == 0) {
@@ -356,7 +359,7 @@
     if(temp != NULL) { [result setDomain: [NSString stringWithUTF8String:(const char*)temp]]; }
     
     if(node->children != NULL) {
-        temp = xmlNodeGetContent(node->children);
+        temp = xmlNodeGetContent(node);
         if(temp != NULL) { 
             [result setText: [NSString stringWithUTF8String: (const char*)temp]];
         }

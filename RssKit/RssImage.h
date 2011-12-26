@@ -15,6 +15,7 @@
 @property (strong) NSString* url;
 @property (strong) NSString* title;
 @property (strong) NSString* link;
+@property (strong) NSString* rssDescription;
 @property (assign) int width;
 @property (assign) int height;
 

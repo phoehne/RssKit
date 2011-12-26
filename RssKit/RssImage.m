@@ -10,6 +10,6 @@
 
 @implementation RssImage 
 
-@synthesize url, title, link, width, height;
+@synthesize url, title, link, width, height, rssDescription;
 
 @end

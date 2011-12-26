@@ -10,6 +10,6 @@
 
 @implementation RssTextInput
 
-@synthesize description, link, name, title;
+@synthesize rssDescription, link, name, title;
 
 @end
