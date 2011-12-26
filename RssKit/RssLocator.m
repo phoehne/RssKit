@@ -16,6 +16,8 @@
 #import "RssTextInput.h"
 #import "RssCloud.h"
 #import "RssCategory.h"
+#import "RssEnclosure.h"
+#import "RssSource.h"
 
 @implementation RssLocator
 
@@ -71,6 +73,9 @@
     rssStr = xmlCharStrdup("rss");
     hourStr = xmlCharStrdup("hour");
     
+    lengthStr = xmlCharStrdup("length");
+    typeStr = xmlCharStrdup("type");
+    
     return self;
 }
 
@@ -116,6 +121,9 @@
     free(rssStr);
     
     free(hourStr);
+    
+    free(lengthStr);
+    free(typeStr);
     
 }
 
@@ -221,28 +229,46 @@
     xmlNode* itemChild;
     if(node == NULL) { return nil; }
     RssItem* result = [[RssItem alloc] init];
+    NSMutableArray* categoryArray = [[NSMutableArray alloc] init];
     
     for(itemChild = node->children; itemChild != NULL; itemChild = itemChild->next) {
-        const char* contentString = (const char*)xmlNodeGetContent(itemChild);
-        if(xmlStrcmp(linkStr, itemChild->name) == 0) {
-            [result setLink: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(titleStr, itemChild->name) == 0) {
-            [result setTitle: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(descriptionStr, itemChild->name) == 0) {
-            [result setDescription: [NSString stringWithUTF8String: contentString]];
-            xmlChar* prop = xmlGetProp(itemChild, isPermaLinkStr);
-            if(prop != NULL) {
-                NSString* converted = [NSString stringWithUTF8String: (const char*)prop];
-                if(![converted isEqualToString:@"false"]) {
-                    [result setIsPermaLink:YES];
+        if(itemChild->type == XML_ELEMENT_NODE) { 
+            const char* contentString = (const char*)xmlNodeGetContent(itemChild);
+            if(xmlStrcmp(linkStr, itemChild->name) == 0) {
+                [result setLink: [NSString stringWithUTF8String: contentString]];
+            } else if(xmlStrcmp(titleStr, itemChild->name) == 0) {
+                [result setTitle: [NSString stringWithUTF8String: contentString]];
+            } else if(xmlStrcmp(guidStr, itemChild->name) == 0) {
+                [result setGuid: [NSString stringWithUTF8String: contentString]];
+                xmlChar* prop = xmlGetProp(itemChild, isPermaLinkStr);
+                if(prop != NULL) {
+                    NSString* converted = [NSString stringWithUTF8String: (const char*)prop];
+                    if(![converted isEqualToString:@"false"]) {
+                        [result setIsPermaLink:YES];
+                    }
                 }
+            } else if(xmlStrcmp(pubDateStr, itemChild->name) == 0) {
+                [result setPubDate: [NSString stringWithUTF8String: contentString]];
+            } else if(xmlStrcmp(authorStr, itemChild->name) == 0) {
+                [result setAuthor: [NSString stringWithUTF8String:contentString]];
+            } else if(xmlStrcmp(descriptionStr, itemChild->name) == 0) {
+                [result setRssDescription: [NSString stringWithUTF8String:contentString]];
+            } else if(xmlStrcmp(commentsStr, itemChild->name) == 0) {
+                [result setComments: [NSString stringWithUTF8String:contentString]];
+            } else if(xmlStrcmp(categoryStr, itemChild->name) == 0) {
+                RssCategory* category = [self processCategory: itemChild];
+                if(category != nil) {
+                    [categoryArray addObject:category];
+                }
+            } else if(xmlStrcmp(enclosureStr, itemChild->name) == 0) {
+                [result setEnclosure:[self processEnclosure:itemChild]];
+            } else if(xmlStrcmp(sourceStr, itemChild->name) == 0) {
+                [result setSource: [self processSource:itemChild]];
             }
-        } else if(xmlStrcmp(guidStr, itemChild->name) == 0) {
-            [result setGuid: [NSString stringWithUTF8String: contentString]];
-        } else if(xmlStrcmp(pubDateStr, itemChild->name) == 0) {
-            [result setPubDate: [NSString stringWithUTF8String: contentString]];
         }
     }
+    
+    [result setCategories:categoryArray];
     
     return result;
 }
@@ -357,6 +383,43 @@
     
     xmlChar* temp = xmlGetProp(node, domainStr);
     if(temp != NULL) { [result setDomain: [NSString stringWithUTF8String:(const char*)temp]]; }
+    
+    if(node->children != NULL) {
+        temp = xmlNodeGetContent(node);
+        if(temp != NULL) { 
+            [result setText: [NSString stringWithUTF8String: (const char*)temp]];
+        }
+    }
+    
+    return result;
+}
+
+-(RssEnclosure*) processEnclosure: (xmlNode*)node {
+    RssEnclosure* result = [[RssEnclosure alloc] init];
+    
+    xmlChar* tempUrl = xmlGetProp(node, urlStr);
+    xmlChar* tempLength = xmlGetProp(node, lengthStr);
+    xmlChar* tempType = xmlGetProp(node, typeStr);
+    
+    if(tempUrl != NULL) { 
+        [result setUrl:[NSString stringWithUTF8String: (const char*)tempUrl]];
+    } 
+    
+    if(tempLength != NULL) {
+        [result setLength:[[NSString stringWithUTF8String: (const char*)tempLength] intValue]];
+    }
+    
+    if(tempType != NULL) {
+        [result setMimeType:[NSString stringWithUTF8String: (const char*)tempType]];
+    }
+    return result;
+}
+
+-(RssSource*) processSource:(xmlNode *)node {
+    RssSource* result = [[RssSource alloc] init];
+    
+    xmlChar* temp = xmlGetProp(node, urlStr);
+    if(temp != NULL) { [result setUrl: [NSString stringWithUTF8String:(const char*)temp]]; }
     
     if(node->children != NULL) {
         temp = xmlNodeGetContent(node);

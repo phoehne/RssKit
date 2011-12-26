@@ -18,12 +18,12 @@
 
 @property (strong) NSString* title;
 @property (strong) NSString* link;
-@property (strong) NSString* description;
+@property (strong) NSString* rssDescription;
 @property (strong) NSString* guid;
 @property (strong) NSString* pubDate;
 @property (assign) BOOL isPermaLink;
 @property (strong) NSString* author;
-@property (strong) RssCategory* category;
+@property (strong) NSArray* categories;
 @property (strong) NSString* comments;
 @property (strong) RssEnclosure* enclosure;
 @property (strong) RssSource* source;

@@ -10,7 +10,7 @@
 
 @implementation RssItem
 
-@synthesize title, link, description, guid, pubDate, isPermaLink, author, source, category, comments, enclosure;
+@synthesize title, link, rssDescription, guid, pubDate, isPermaLink, author, source, categories, comments, enclosure;
 
 -(id) init {
     self = [super init];

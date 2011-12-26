@@ -17,6 +17,8 @@
 @class RssTextInput;
 @class RssCloud;
 @class RssCategory;
+@class RssEnclosure;
+@class RssSource;
 
 @interface RssLocator : NSObject {
     xmlChar* titleStr;
@@ -60,6 +62,8 @@
     xmlChar* bodyStr;
     xmlChar* rssStr;
     xmlChar* hourStr;
+    xmlChar* lengthStr;
+    xmlChar* typeStr;
 }
 
 @property (strong) NSString* ticker;
@@ -74,5 +78,7 @@
 -(RssTextInput*) processTextInput: (xmlNode*)node;
 -(RssCloud*) processCloud: (xmlNode*)node;
 -(RssCategory*) processCategory: (xmlNode*)node;
+-(RssEnclosure*) processEnclosure: (xmlNode*)node;
+-(RssSource*) processSource: (xmlNode*)node;
 
 @end
