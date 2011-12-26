@@ -1,8 +1,8 @@
 //
-//  TestRssChannel.h
+//  TestRssItem.h
 //  RssKit
 //
-//  Created by Paul Hoehne on 12/22/11.
+//  Created by Paul Hoehne on 12/26/11.
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
@@ -11,11 +11,11 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
+@class RssItem;
 @class RssChannel;
 
-@interface TestRssChannel : SenTestCase {
-    RssChannel* channelOne;
-    RssChannel* channelTwo;
+@interface TestRssItem : SenTestCase {
+    RssItem* item;
+    RssChannel* channel;
 }
-
 @end
