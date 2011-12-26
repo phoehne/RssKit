@@ -51,9 +51,6 @@
 		BED43A9114A3D342001968B3 /* TestRssLocator.m in Sources */ = {isa = PBXBuildFile; fileRef = BED43A9014A3D342001968B3 /* TestRssLocator.m */; };
 		BED43A9414A3D9BF001968B3 /* TestRssRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = BED43A9314A3D9BF001968B3 /* TestRssRoot.m */; };
 		BED43A9714A3DAF8001968B3 /* TestRssChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = BED43A9614A3DAF8001968B3 /* TestRssChannel.m */; };
-		BED43A9A14A41560001968B3 /* RssParserDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = BED43A9814A41560001968B3 /* RssParserDelegate.h */; };
-		BED43A9B14A41560001968B3 /* RssParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BED43A9914A41560001968B3 /* RssParserDelegate.m */; };
-		BED43A9C14A41560001968B3 /* RssParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BED43A9914A41560001968B3 /* RssParserDelegate.m */; };
 		BED43AA114A447D0001968B3 /* sample.xml in Resources */ = {isa = PBXBuildFile; fileRef = BED43AA014A447D0001968B3 /* sample.xml */; };
 		BEF000C914A51A88005ADE5C /* sample2.xml in Resources */ = {isa = PBXBuildFile; fileRef = BEF000C714A50DFE005ADE5C /* sample2.xml */; };
 /* End PBXBuildFile section */
@@ -71,6 +68,7 @@
 /* Begin PBXFileReference section */
 		BE1E34B614A8DBF70022689A /* TestRssItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestRssItem.h; sourceTree = "<group>"; };
 		BE1E34B714A8DBF70022689A /* TestRssItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRssItem.m; sourceTree = "<group>"; };
+		BE1E34BD14A93C960022689A /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		BE8B320814A3BE2B0098A44F /* libRssKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRssKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE8B320B14A3BE2B0098A44F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BE8B320F14A3BE2B0098A44F /* RssKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RssKit-Prefix.pch"; sourceTree = "<group>"; };
@@ -110,8 +108,6 @@
 		BED43A9314A3D9BF001968B3 /* TestRssRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRssRoot.m; sourceTree = "<group>"; };
 		BED43A9514A3DAF8001968B3 /* TestRssChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestRssChannel.h; sourceTree = "<group>"; };
 		BED43A9614A3DAF8001968B3 /* TestRssChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRssChannel.m; sourceTree = "<group>"; };
-		BED43A9814A41560001968B3 /* RssParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RssParserDelegate.h; sourceTree = "<group>"; };
-		BED43A9914A41560001968B3 /* RssParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RssParserDelegate.m; sourceTree = "<group>"; };
 		BED43AA014A447D0001968B3 /* sample.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = sample.xml; sourceTree = "<group>"; };
 		BEF000C714A50DFE005ADE5C /* sample2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = sample2.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -197,8 +193,6 @@
 				BE8B321014A3BE2B0098A44F /* RssKit.h */,
 				BE8B321114A3BE2B0098A44F /* RssKit.m */,
 				BE8B320E14A3BE2B0098A44F /* Supporting Files */,
-				BED43A9814A41560001968B3 /* RssParserDelegate.h */,
-				BED43A9914A41560001968B3 /* RssParserDelegate.m */,
 			);
 			path = RssKit;
 			sourceTree = "<group>";
@@ -207,6 +201,7 @@
 			isa = PBXGroup;
 			children = (
 				BE8B320F14A3BE2B0098A44F /* RssKit-Prefix.pch */,
+				BE1E34BD14A93C960022689A /* LICENSE */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -257,7 +252,6 @@
 				BE8B325B14A3BE6A0098A44F /* RssRoot.h in Headers */,
 				BE8B325E14A3BE6A0098A44F /* RssSource.h in Headers */,
 				BE8B326114A3BE6A0098A44F /* RssTextInput.h in Headers */,
-				BED43A9A14A41560001968B3 /* RssParserDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,7 +365,6 @@
 				BE8B325C14A3BE6A0098A44F /* RssRoot.m in Sources */,
 				BE8B325F14A3BE6A0098A44F /* RssSource.m in Sources */,
 				BE8B326214A3BE6A0098A44F /* RssTextInput.m in Sources */,
-				BED43A9B14A41560001968B3 /* RssParserDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,7 +386,6 @@
 				BED43A9114A3D342001968B3 /* TestRssLocator.m in Sources */,
 				BED43A9414A3D9BF001968B3 /* TestRssRoot.m in Sources */,
 				BED43A9714A3DAF8001968B3 /* TestRssChannel.m in Sources */,
-				BED43A9C14A41560001968B3 /* RssParserDelegate.m in Sources */,
 				BE1E34B814A8DBF70022689A /* TestRssItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
