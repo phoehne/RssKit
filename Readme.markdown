@@ -16,8 +16,11 @@ Usage
 -----
 
 RssLocator* locator = \[\[RssLocator alloc\] init\];
-\[locator setFeedUrl: @"http://somedomain.tld/feed/url"\];
+
+\[locator setFeedUrl: @\"http://somedomain.tld/feed/url\"\];
     
 RssRoot* root = \[locator retrieveFeed\];
+
 channel = \[root channel\];
+
 item = \[\[channel items\] objectAtIndex: 0\];
