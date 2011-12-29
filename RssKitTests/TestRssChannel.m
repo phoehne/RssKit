@@ -95,6 +95,10 @@
 
 -(void)testOptionalValues
 {
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat: @"EEE, dd MMM yyyy HH:mm:ss zzz"];
+    [dateFormatter setLocale: [NSLocale currentLocale]];
+    
     STAssertEqualObjects(@"en-us", [channelTwo language], 
                          @"Optional element langauge is not valid in sample2.xml");
     STAssertEqualObjects(@"Copyright 2011, Major Eastern Syndicate", [channelTwo copyright], 
@@ -103,9 +107,11 @@
                          @"Optional element managingEditor is not valid in sample2.xml");
     STAssertEqualObjects(@"webmaster@example.com", [channelTwo webMaster], 
                          @"Optional element webMaster is not valid in sample2.xmo");
-    STAssertEqualObjects(@"Tue, 10 Jun 2003 04:00:00 GMT", [channelTwo pubDate], 
-                         @"Optional element pubDate is not valid in sample2.xml");
-    STAssertEqualObjects(@"Tue, 10 Jun 2003 09:41:01 GMT", [channelTwo lastBuildDate], 
+    STAssertEqualObjects([dateFormatter dateFromString: @"Tue, 10 Jun 2003 04:00:00 GMT"], 
+                         [channelTwo pubDate], @"Optional element pubDate is not valid in sample2.xml");
+
+    STAssertEqualObjects([dateFormatter dateFromString: @"Tue, 10 Jun 2003 09:41:01 GMT"], 
+                         [channelTwo lastBuildDate], 
                          @"Optional element lastBuildDate sis not valid in sample2.xmo");
     STAssertEqualObjects(@"Weblog Editor 2.0", [channelTwo generator], 
                          @"Optional element generator is not valid in sample2.xml");

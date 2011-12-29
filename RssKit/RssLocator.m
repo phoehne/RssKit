@@ -103,6 +103,10 @@
     lengthStr = xmlCharStrdup("length");
     typeStr = xmlCharStrdup("type");
     
+    dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat: @"EEE, dd MMM yyyy HH:mm:ss zzz"];
+    [dateFormatter setLocale:[NSLocale currentLocale]];
+    
     return self;
 }
 
@@ -163,8 +167,8 @@
     else if(xmlStrcmp(linkStr, node->name) == 0)           { [rssChannel setLink: nativeString]; } 
     else if(xmlStrcmp(descriptionStr, node->name) == 0)    { [rssChannel setDescription: nativeString]; } 
     else if(xmlStrcmp(languageStr, node->name) == 0)       { [rssChannel setLanguage: nativeString]; } 
-    else if(xmlStrcmp(lastBuildDateStr, node->name) == 0)  { [rssChannel setLastBuildDate: nativeString]; } 
-    else if(xmlStrcmp(pubDateStr, node->name) == 0)        { [rssChannel setPubDate: nativeString]; } 
+    else if(xmlStrcmp(lastBuildDateStr, node->name) == 0)  { [rssChannel setLastBuildDate:[dateFormatter dateFromString:nativeString]]; }
+    else if(xmlStrcmp(pubDateStr, node->name) == 0)        { [rssChannel setPubDate: [dateFormatter dateFromString:nativeString]]; } 
     else if(xmlStrcmp(managingEditorStr, node->name) == 0) { [rssChannel setManagingEditor:nativeString]; } 
     else if(xmlStrcmp(webMasterStr, node->name) == 0)      { [rssChannel setWebMaster:nativeString]; }
     else if(xmlStrcmp(generatorStr, node->name) == 0)      { [rssChannel setGenerator:nativeString]; }
@@ -275,7 +279,7 @@
                     }
                 }
             } else if(xmlStrcmp(pubDateStr, itemChild->name) == 0) {
-                [result setPubDate: [NSString stringWithUTF8String: contentString]];
+                [result setPubDate: [dateFormatter dateFromString: [NSString stringWithUTF8String: contentString]]];
             } else if(xmlStrcmp(authorStr, itemChild->name) == 0) {
                 [result setAuthor: [NSString stringWithUTF8String:contentString]];
             } else if(xmlStrcmp(descriptionStr, itemChild->name) == 0) {

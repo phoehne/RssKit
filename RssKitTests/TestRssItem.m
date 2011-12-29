@@ -60,6 +60,11 @@
 // All code under test must be linked into the Unit Test bundle
 -(void)testOptional 
 {
+    
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss zzz"];
+    [dateFormatter setLocale:[NSLocale currentLocale]];
+    
     STAssertEquals((NSUInteger)1, [[channel items] count], @"There should be one item in sample2.xml");
     
     STAssertEqualObjects(@"Star City", [item title], 
@@ -68,7 +73,7 @@
                          @"The link for sample2.xml should be 'http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp'");
     STAssertEqualObjects(@"The story <a href=\"http://foo.com/m\">Link</a>.", [item rssDescription], 
                          @"The story does not match the expected value for sample2.xml");
-    STAssertEqualObjects(@"Tue, 03 Jun 2003 09:39:21 GMT", [item pubDate], 
+    STAssertEqualObjects([dateFormatter dateFromString: @"Tue, 03 Jun 2003 09:39:21 GMT"], [item pubDate], 
                          @"The pub date should be 'Tue, 03 Jun 2003 09:39:21 GMT' for sample2.xml");
     STAssertEqualObjects(@"joe.author@foo.bar.com (Joe Author)", [item author], 
                          @"The e-mail address should be 'joe.author@foo.bar.com (Joe Author)' for sample2.xml");

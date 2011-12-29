@@ -93,6 +93,7 @@
     xmlChar* hourStr;
     xmlChar* lengthStr;
     xmlChar* typeStr;
+    NSDateFormatter* dateFormatter;
 }
 
 @property (strong) NSString* ticker;
