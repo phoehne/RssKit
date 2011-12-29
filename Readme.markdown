@@ -16,7 +16,7 @@ Usage
 -----
 
 RssLocator* locator = \[\[RssLocator alloc\] init\];
-\[locator setFeedUrl: \[\[NSBundle bundleForClass:\[self class\]\] URLForResource:@"sample2.xml" withExtension:nil\]\];
+\[locator setFeedUrl: @"http://somedomain.tld/feed/url"\];
     
 RssRoot* root = \[locator retrieveFeed\];
 channel = \[root channel\];
